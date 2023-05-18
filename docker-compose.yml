@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+  app:
+    container_name: kana-arima-app
+    image: kana-arima-app
+    build: .
+    volumes:
+      - ./kana-arima-app/src:/app/src
+      - ./kana-arima-app/node_modules:/app/node_modules
+    ports:
+      - "3000:3000"
+    networks:
+      - kana-arima-app-network
+
+networks:
+  kana-arima-app-network:
+    driver: bridge
