@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faArrowRight, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import Image from 'next/image';
 import pic10 from '../public/images/pic10.png';
 import pic11 from '../public/images/pic11.png';
@@ -69,7 +69,15 @@ const Pictures = () => {
         <button onClick={prevSlide} className="text-white mr-4"><FontAwesomeIcon icon={faArrowLeft} /></button>
         {getSlides().map(index => (
           <div className="opacity-100 transition-opacity duration-1000 px-2" key={index}>
-            <Image src={images[index]} alt="Bild" width={512} height={288} className="h-full w-full"/>
+            <Image 
+              src={images[index]} 
+              alt="Bild" 
+              width={512} 
+              height={288} 
+              className="h-full w-full"
+              placeholder="blur"
+              blurDataURL={`<div style={{fontSize: "3em"}}><FontAwesomeIcon icon={faSpinner} spin /></div>`}
+            />
           </div>
         ))}
         <button onClick={nextSlide} className="text-white ml-4"><FontAwesomeIcon icon={faArrowRight} /></button>
