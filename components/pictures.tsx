@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import Image from 'next/image';
+import { faArrowLeft, faArrowRight, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import pic10 from '../public/images/pic10.png';
 import pic11 from '../public/images/pic11.png';
 import pic12 from '../public/images/pic12.png';
@@ -13,6 +12,7 @@ import pic15 from '../public/images/pic15.png';
 import pic16 from '../public/images/pic16.png';
 import pic17 from '../public/images/pic17.png';
 import pic18 from '../public/images/pic18.png';
+import Image from 'next/image';
 
 const useWindowSize = () => {
   const [windowSize, setWindowSize] = useState({
@@ -42,6 +42,7 @@ const useWindowSize = () => {
 const Pictures = () => {
   const images = [pic10, pic11, pic12, pic13, pic14, pic15, pic16, pic17, pic18];
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isLoaded, setIsLoaded] = useState({});
   const size = useWindowSize();
 
   const nextSlide = () => {
@@ -50,6 +51,10 @@ const Pictures = () => {
 
   const prevSlide = () => {
     setCurrentIndex((currentIndex - 1 + images.length) % images.length);
+  };
+  // @ts-ignore
+  const handleImageLoad = (index) => {
+    setIsLoaded(prevState => ({...prevState, [index]: true}));
   };
 
   const getSlides = () => {
@@ -68,15 +73,20 @@ const Pictures = () => {
       <div className="flex items-center overflow-x-hidden">
         <button onClick={prevSlide} className="text-white mr-4"><FontAwesomeIcon icon={faArrowLeft} /></button>
         {getSlides().map(index => (
-          <div className="opacity-100 transition-opacity duration-1000 px-2" key={index}>
+          <div className="opacity-100 transition-opacity duration-1000 px-2 relative" key={index} style={{ width: '512px', height: '288px' }}>
+            {/* @ts-ignore */}
+            {!isLoaded[index] && 
+              <div className="absolute inset-0 flex items-center justify-center">
+                <FontAwesomeIcon icon={faCircleNotch} className="animate-spin text-4xl text-red-200" />
+              </div>
+            }
             <Image 
-              src={images[index]} 
-              alt="Bild" 
-              width={512} 
-              height={288} 
-              className="h-full w-full"
-              placeholder="blur"
-              blurDataURL={`<div style={{fontSize: "3em"}}><FontAwesomeIcon icon={faSpinner} spin /></div>`}
+              src={images[index]}
+              alt="Picture" 
+              className="h-full w-full object-cover"
+              onLoad={() => handleImageLoad(index)}
+              /* @ts-ignore */
+              style={{visibility: isLoaded[index] ? 'visible' : 'hidden'}}
             />
           </div>
         ))}
